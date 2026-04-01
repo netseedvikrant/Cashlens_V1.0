@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { Wallet } from 'lucide-react';
 
 const Dashboard = () => {
+  const [expenses, setExpenses] = useState(() => {
+    const saved = localStorage.getItem('cashlens_expenses');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const [formData, setFormData] = useState({
     amount: '',
     category: 'Food & Drink',
@@ -30,10 +35,44 @@ const Dashboard = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Expense Submitted:', formData);
-    // Reset or further actions
+    
+    const { amount, category, date, note } = formData;
+
+    // 1. Validation
+    if (!amount || !category || !date) {
+      alert('Please fill in all required fields (Amount, Category, and Date).');
+      return;
+    }
+
+    // 2. Generate unique entry
+    const newExpense = {
+      id: crypto.randomUUID(),
+      amount: parseFloat(amount),
+      category,
+      date,
+      note,
+      createdAt: new Date().toISOString()
+    };
+
+    // 3. Save to state and localStorage
+    const updatedExpenses = [...expenses, newExpense];
+    setExpenses(updatedExpenses);
+    localStorage.setItem('cashlens_expenses', JSON.stringify(updatedExpenses));
+
+    // Reset form
+    setFormData({
+      amount: '',
+      category: 'Food & Drink',
+      date: new Date().toISOString().split('T')[0],
+      note: ''
+    });
+
     alert('Expense added successfully!');
   };
+
+  // Calculate stats
+  const totalSpent = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+  const activeCategoriesCount = new Set(expenses.map(exp => exp.category)).size;
 
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -51,11 +90,11 @@ const Dashboard = () => {
         <section className="grid grid-cols-2 gap-4 mb-8">
           <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100">
             <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Total Spent</p>
-            <p className="text-2xl font-bold text-blue-900">$0</p>
+            <p className="text-2xl font-bold text-blue-900">${totalSpent.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
           </div>
           <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
             <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wider mb-1">Categories</p>
-            <p className="text-2xl font-bold text-emerald-900">0</p>
+            <p className="text-2xl font-bold text-emerald-900">{activeCategoriesCount}</p>
           </div>
         </section>
 
@@ -76,6 +115,8 @@ const Dashboard = () => {
                   name="amount"
                   id="amount"
                   required
+                  step="0.01"
+                  min="0"
                   placeholder="0.00"
                   className="w-full pl-8 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder:text-slate-300"
                   value={formData.amount}
