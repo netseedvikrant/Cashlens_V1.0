@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Trash2 } from 'lucide-react';
 
-const ExpenseList = ({ expenses, onDelete }) => {
+const ExpenseList = ({ expenses, onDelete, currencySymbol = '$' }) => {
   // Sort expenses by date (newest first)
-  const sortedExpenses = [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const sortedExpenses = useMemo(() => {
+    return [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
+  }, [expenses]);
 
   if (expenses.length === 0) {
     return (
@@ -51,7 +53,7 @@ const ExpenseList = ({ expenses, onDelete }) => {
                   {expense.note || <span className="text-slate-300 italic">None</span>}
                 </td>
                 <td className="px-6 py-4 text-sm font-bold text-slate-900 text-right whitespace-nowrap">
-                  ${expense.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {currencySymbol}{expense.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </td>
                 <td className="px-6 py-4 text-center">
                   <button
