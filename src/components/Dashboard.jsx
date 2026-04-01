@@ -15,6 +15,8 @@ const Dashboard = () => {
     note: ''
   });
 
+  const [filterCategory, setFilterCategory] = useState('All');
+
   const categories = [
     'Food & Drink',
     'Transport',
@@ -79,9 +81,14 @@ const Dashboard = () => {
     }
   };
 
-  // Calculate stats
-  const totalSpent = expenses.reduce((sum, exp) => sum + exp.amount, 0);
-  const activeCategoriesCount = new Set(expenses.map(exp => exp.category)).size;
+  // Calculate filtered expenses
+  const filteredExpenses = filterCategory === 'All' 
+    ? expenses 
+    : expenses.filter(exp => exp.category === filterCategory);
+
+  // Calculate stats based on filtered data
+  const totalSpent = filteredExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+  const activeCategoriesCount = new Set(filteredExpenses.map(exp => exp.category)).size;
 
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -97,13 +104,15 @@ const Dashboard = () => {
         </header>
 
         <section className="grid grid-cols-2 gap-4 mb-8">
-          <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100">
-            <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Total Spent</p>
+          <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100 shadow-sm">
+            <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">
+              {filterCategory === 'All' ? 'Total Spent' : `${filterCategory} Total`}
+            </p>
             <p className="text-2xl font-bold text-blue-900">${totalSpent.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
           </div>
-          <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
-            <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wider mb-1">Categories</p>
-            <p className="text-2xl font-bold text-emerald-900">{activeCategoriesCount}</p>
+          <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 shadow-sm">
+            <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wider mb-1">Items Shown</p>
+            <p className="text-2xl font-bold text-emerald-900">{filteredExpenses.length}</p>
           </div>
         </section>
 
@@ -192,7 +201,24 @@ const Dashboard = () => {
       </div>
 
       <div className="max-w-4xl mx-auto mt-8">
-        <ExpenseList expenses={expenses} onDelete={handleDelete} />
+        <div className="flex items-center justify-between mb-4 px-2">
+          <h2 className="text-xl font-bold text-slate-800">Expense History</h2>
+          <div className="flex items-center gap-2">
+            <label htmlFor="filter" className="text-sm font-medium text-slate-500">Filter by:</label>
+            <select
+              id="filter"
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-600 focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer hover:border-slate-300 transition-all"
+            >
+              <option value="All">All Categories</option>
+              {categories.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <ExpenseList expenses={filteredExpenses} onDelete={handleDelete} />
       </div>
     </div>
   );
