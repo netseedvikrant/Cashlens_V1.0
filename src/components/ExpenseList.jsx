@@ -7,8 +7,12 @@ const ExpenseList = ({ expenses, onDelete }) => {
 
   if (expenses.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-dashed border-slate-200 p-12 text-center mt-8">
-        <p className="text-slate-400">No expenses recorded yet. Add one above to get started!</p>
+      <div className="bg-white rounded-2xl border border-dashed border-slate-200 p-16 text-center mt-8 shadow-sm">
+        <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Trash2 className="w-8 h-8 text-slate-200" />
+        </div>
+        <h3 className="text-lg font-semibold text-slate-700 mb-1">No expenses yet</h3>
+        <p className="text-slate-400 max-w-xs mx-auto">Start tracking your spending by adding your first expense using the form above.</p>
       </div>
     );
   }
@@ -35,12 +39,8 @@ const ExpenseList = ({ expenses, onDelete }) => {
           <tbody className="divide-y divide-slate-50">
             {sortedExpenses.map((expense) => (
               <tr key={expense.id} className="hover:bg-slate-50/80 transition-colors group">
-                <td className="px-6 py-4 text-sm text-slate-600 whitespace-nowrap">
-                  {new Date(expense.date).toLocaleDateString(undefined, { 
-                    month: 'short', 
-                    day: 'numeric', 
-                    year: 'numeric' 
-                  })}
+                <td className="px-6 py-4 text-sm font-medium text-slate-600 whitespace-nowrap">
+                  {expense.date}
                 </td>
                 <td className="px-6 py-4">
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100/50">

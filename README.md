@@ -1,16 +1,33 @@
-# React + Vite
+# Cashlens - Personal Expense Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Cashlens is a modern, lightweight, and offline-first personal expense tracking application built with React and Tailwind CSS. It empowers users to manage their daily spending with a clean interface and real-time dashboard analytics.
 
-Currently, two official plugins are available:
+## 🚀 How to Run
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Get the application running locally in seconds:
 
-## React Compiler
+```bash
+npm run dev
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+*(Note: Ensure you have run `npm install` before the first run to set up all dependencies.)*
 
-## Expanding the ESLint configuration
+## ✨ Core Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Dynamic Dashboard**: Real-time summary of total spending and active items based on current filters.
+- **Interactive Form**: Categorize expenses (Food & Drink, Transport, Housing, etc.) with support for decimal amounts and notes.
+- **Expense History**: A clean, sortable table view of all your transactions with the most recent entries at the top.
+- **Smart Filtering**: Filter your history by category to see specific spending patterns; totals recalculate automatically.
+- **Data Persistence**: Uses `localStorage` to keep your data safe and persistent across browser sessions without needing a backend.
+- **Modern & Responsive UI**: Built with a "Mobile First" philosophy, ensuring a premium experience on everything from smartphones to large monitors.
+- **Lucide Icons**: Intuitive visual cues using the Lucide icon library.
+
+## 🛠️ Technology Stack
+
+- **React**: Frontend framework.
+- **Tailwind CSS**: Utility-first styling for a premium aesthetic.
+- **Lucide React**: Vector icons for a professional look.
+- **Vite**: Ultra-fast build tool and development server.
+
+---
+Built with ❤️ by Antigravity
