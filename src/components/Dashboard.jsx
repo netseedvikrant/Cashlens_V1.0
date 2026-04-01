@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Wallet } from 'lucide-react';
+import ExpenseList from './ExpenseList';
 
 const Dashboard = () => {
   const [expenses, setExpenses] = useState(() => {
@@ -68,6 +69,14 @@ const Dashboard = () => {
     });
 
     alert('Expense added successfully!');
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm('Are you sure you want to delete this expense?')) {
+      const updatedExpenses = expenses.filter(exp => exp.id !== id);
+      setExpenses(updatedExpenses);
+      localStorage.setItem('cashlens_expenses', JSON.stringify(updatedExpenses));
+    }
   };
 
   // Calculate stats
@@ -180,6 +189,10 @@ const Dashboard = () => {
             </button>
           </form>
         </section>
+      </div>
+
+      <div className="max-w-4xl mx-auto mt-8">
+        <ExpenseList expenses={expenses} onDelete={handleDelete} />
       </div>
     </div>
   );
