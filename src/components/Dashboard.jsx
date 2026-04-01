@@ -49,6 +49,8 @@ const Dashboard = () => {
     'Other'
   ];
 
+  const today = new Date().toISOString().split('T')[0];
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -94,6 +96,14 @@ const Dashboard = () => {
     alert('Expense added successfully!');
   };
 
+  const handleUpdate = (updatedExpense) => {
+    const updatedExpenses = expenses.map(exp => 
+      exp.id === updatedExpense.id ? updatedExpense : exp
+    );
+    setExpenses(updatedExpenses);
+    localStorage.setItem('cashlens_expenses', JSON.stringify(updatedExpenses));
+  };
+
   const handleDelete = (id) => {
     if (window.confirm('Are you sure you want to delete this expense?')) {
       const updatedExpenses = expenses.filter(exp => exp.id !== id);
@@ -137,10 +147,10 @@ const Dashboard = () => {
                   <div className="p-2 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-lg shadow-blue-200">
                     <Wallet className="w-6 h-6 text-white" />
                   </div>
-                  <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Cashlens</h1>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">Cashlens</h1>
                 </div>
-                <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-lg border border-slate-100">
-                  <Globe className="w-4 h-4 text-slate-400" />
+                <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-lg border border-slate-100 flex-shrink-0">
+                  <Globe className="w-3.5 h-3.5 text-slate-400" />
                   <select 
                     value={currency} 
                     onChange={(e) => handleCurrencyChange(e.target.value)}
@@ -158,8 +168,8 @@ const Dashboard = () => {
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">
                   {filterCategory === 'All' ? 'Total Expenses' : `${filterCategory}`}
                 </p>
-                <p className="text-4xl font-bold tracking-tight">
-                  <span className="text-blue-400 mr-2">{currentSymbol}</span>
+                <p className="text-3xl sm:text-4xl font-bold tracking-tight">
+                  <span className="text-blue-400 mr-1 sm:mr-2">{currentSymbol}</span>
                   {totalSpent.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
                 <div className="mt-4 flex items-center gap-2 text-xs font-medium text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full w-fit border border-emerald-400/20">
@@ -224,6 +234,7 @@ const Dashboard = () => {
                     name="date"
                     id="date"
                     required
+                    max={today}
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all cursor-pointer text-slate-700"
                     value={formData.date}
                     onChange={handleChange}
@@ -319,7 +330,9 @@ const Dashboard = () => {
             <ExpenseList 
               expenses={filteredExpenses} 
               onDelete={handleDelete} 
+              onUpdate={handleUpdate}
               currencySymbol={currentSymbol}
+              categories={categories}
             />
           </div>
         </div>
