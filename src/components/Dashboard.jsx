@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Wallet, Globe, TrendingUp, Sun, Moon, Sparkles, Brain, Loader2, Download, Calendar } from 'lucide-react';
+import { Wallet, Globe, TrendingUp, Sun, Moon, Sparkles, Brain, Loader2, Download, Calendar, CheckCircle, AlertCircle, X } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import ExpenseList from './ExpenseList';
 
@@ -27,6 +27,12 @@ const Dashboard = () => {
   const [aiTimeframe, setAiTimeframe] = useState('Month');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+
+  const showToast = (message, type = 'success') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast(prev => ({ ...prev, show: false })), 3000);
+  };
 
   const currencies = [
     { code: 'USD', symbol: '$' },
@@ -73,7 +79,7 @@ const Dashboard = () => {
 
     // 1. Validation
     if (!amount || !category || !date) {
-      alert('Please fill in all required fields (Amount, Category, and Date).');
+      showToast('Please fill in all required fields (Amount, Category, and Date).', 'error');
       return;
     }
 
@@ -100,7 +106,7 @@ const Dashboard = () => {
       note: ''
     });
 
-    alert('Expense added successfully!');
+    showToast('Expense added successfully!', 'success');
   };
 
   const handleUpdate = (updatedExpense) => {
@@ -121,7 +127,7 @@ const Dashboard = () => {
 
   const getAIInsights = async () => {
     if (expenses.length === 0) {
-      alert('Please add some expenses first!');
+      showToast('Please add some expenses first!', 'error');
       return;
     }
 
@@ -140,7 +146,7 @@ const Dashboard = () => {
       }
 
       if (filteredData.length === 0) {
-        alert(`No expenses found for the selected ${aiTimeframe.toLowerCase()}. Please add some data for this period.`);
+      showToast(`No expenses found for the selected ${aiTimeframe.toLowerCase()}. Please add some data for this period.`, 'error');
         setAiLoading(false);
         return;
       }
@@ -157,11 +163,11 @@ const Dashboard = () => {
       Total Spent: ${filteredData.reduce((sum, exp) => sum + exp.amount, 0).toFixed(2)}.
 
       Act as a world-class financial advisor. Analyze the provided spending data and:
-      1. Provide a concise summary of the biggest spending habits.
-      2. Offer 2-3 genuinely useful piece of advice to save money or optimize budget.
-      3. Keep the tone professional yet encouraging.
-      4. Limit the response to under 200 words.
-      5. Use bullet points for the habits.`;
+      1. Provide a concise summary of the biggest spending habits. Use bullet points for the habits.
+      2. This is just for you to think like a Human and reason that a person can't just simply reduce some of their expenses like Health, Basic Grocery, Some Food and Entertainment once in a while, Monthly Rent or Loan EMI, Etc.
+      3. Task: "Offer 2-3 genuinely useful piece of advice to save money or optimize budget, don't budge user for neccesary expenses like Hospital, Medicine, Once in a while Outside Food, Monthly Groceries, Etc", compare the expenses to a average expense of a person data for the country that have same currency to do said task.
+      4. If Health Expenses, Food Expenses, Grocery Expenses are too much in comparision to average Give a one liner expert advice.
+      5. Keep the tone professional yet encouraging. Limit the response to under 200 words.`; 
 
       const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
@@ -185,7 +191,7 @@ const Dashboard = () => {
       }
     } catch (error) {
       console.error(error);
-      alert('AI Insights unavailable. Please check your API key.');
+      showToast('AI Insights unavailable. Please check your API key.', 'error');
     } finally {
       setAiLoading(false);
     }
@@ -193,7 +199,7 @@ const Dashboard = () => {
 
   const exportToCSV = () => {
     if (filteredExpenses.length === 0) {
-      alert('No data to export!');
+      showToast('No data to export!', 'error');
       return;
     }
 
@@ -559,7 +565,7 @@ const Dashboard = () => {
                     <button
                       onClick={() => {
                         navigator.clipboard.writeText(aiInsights);
-                        alert('Insights copied to clipboard!');
+                        showToast('Insights copied to clipboard!', 'success');
                       }}
                       className="mt-4 text-[10px] font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 uppercase tracking-widest mr-4"
                     >
@@ -605,6 +611,21 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Modern Toast Notification */}
+      {toast.show && (
+        <div className={`fixed bottom-6 right-6 z-[100] flex items-center gap-3 px-4 py-3 rounded-2xl shadow-2xl border fade-in ${
+          toast.type === 'success' 
+            ? 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-100 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-400' 
+            : 'bg-rose-50 dark:bg-rose-900/30 border-rose-100 dark:border-rose-800/50 text-rose-700 dark:text-rose-400'
+        }`}>
+          {toast.type === 'success' ? <CheckCircle className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+          <p className="text-sm font-bold tracking-tight">{toast.message}</p>
+          <button onClick={() => setToast(prev => ({ ...prev, show: false }))} className="ml-2 hover:opacity-70 transition-opacity">
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };
