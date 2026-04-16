@@ -21,3 +21,12 @@ export const loginSchema = z.object({
 export const otpSchema = z.object({
   otp: z.string().length(6, 'OTP must be exactly 6 digits'),
 });
+export const resetPasswordSchema = z.object({
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[0-9]/, 'Password must contain at least one number'),
+  confirmPassword: z.string().min(1, 'Please confirm your password'),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});

@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import OtpPage from './pages/auth/OtpPage';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import LandingPage from './pages/LandingPage';
 import ConfigCheck from './components/auth/ConfigCheck';
 import Layout from './components/auth/Layout';
@@ -61,6 +62,10 @@ function App() {
             <Route 
               path="/otp" 
               element={<Layout><OtpPage /></Layout>} 
+            />
+            <Route 
+              path="/reset-password" 
+              element={<Layout><ResetPasswordPage /></Layout>} 
             />
             <Route 
               path="/dashboard" 

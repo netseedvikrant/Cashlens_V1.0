@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Wallet, Play, ArrowRight, Shield, Zap, Heart, Star, Quote, ChevronDown, Brain, Globe } from 'lucide-react';
+import { Play, ArrowRight, Shield, Zap, Heart, Star, Quote, ChevronDown, Brain, Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ThemeToggle from '../components/ThemeToggle';
 
@@ -22,7 +22,7 @@ const LandingPage = () => {
     {
       name: "Vartika Jadon",
       role: "Freelance Designer",
-      text: "The cleanest UI I've ever seen in a finance app. Simple, powerful, and beautiful. Even better than my own App.",
+      text: "The cleanest UI I've ever seen in a finance app. Simple, powerful, and beautiful.",
       stars: 5,
       avatar: "https://i.pravatar.cc/150?u=sarah"
     },
@@ -86,8 +86,8 @@ const LandingPage = () => {
             animate={{ opacity: 1, y: 0 }}
             className="flex items-center justify-center gap-3 mb-8"
           >
-            <div className="p-3 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl shadow-xl shadow-blue-200 dark:shadow-none">
-              <Wallet className="w-10 h-10 text-white" />
+            <div className="p-1 bg-white dark:bg-slate-900 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-none overflow-hidden">
+              <img src="/logo.png" alt="Cashlens Logo" className="w-14 h-14 object-contain" />
             </div>
             <h1 className="text-4xl sm:text-6xl font-black text-slate-900 dark:text-white tracking-tighter">
               Cashlens
@@ -249,7 +249,7 @@ const LandingPage = () => {
       <footer className="py-12 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <div className="flex items-center justify-center gap-2 mb-6">
-            <Wallet className="w-6 h-6 text-blue-600" />
+            <img src="/logo.png" alt="Cashlens Logo" className="w-6 h-6 object-contain" />
             <span className="text-xl font-black text-slate-900 dark:text-white">Cashlens</span>
           </div>
           <p className="text-slate-400 dark:text-slate-600 text-[10px] font-bold uppercase tracking-[0.3em]">

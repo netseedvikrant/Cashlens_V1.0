@@ -1,5 +1,4 @@
 import React from 'react';
-import { Wallet } from 'lucide-react';
 import ThemeToggle from '../ThemeToggle';
 
 const Layout = ({ children }) => {
@@ -16,8 +15,8 @@ const Layout = ({ children }) => {
 
       <div className="w-full max-w-md z-10">
         <div className="flex flex-col items-center mb-10 fade-in">
-          <div className="p-3 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl shadow-xl shadow-blue-200 dark:shadow-none mb-4">
-            <Wallet className="w-8 h-8 text-white" />
+          <div className="p-1.5 bg-white dark:bg-slate-900 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-none mb-4 border border-slate-100 dark:border-slate-800">
+            <img src="/logo.png" alt="Logo" className="w-12 h-12 object-contain" />
           </div>
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Cashlens</h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Smart expenses on the go.</p>

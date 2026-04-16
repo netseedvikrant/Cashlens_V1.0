@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Wallet, Globe, TrendingUp, Sun, Moon, Sparkles, Brain, Loader2, Download, Calendar, CheckCircle, AlertCircle, LogOut, X, FileText, Upload, Utensils, Car, Home, Stethoscope, Film, ShoppingBag, GraduationCap, MoreHorizontal, DollarSign, Euro, PoundSterling, IndianRupee, JapaneseYen } from 'lucide-react';
+import { Globe, TrendingUp, Sun, Moon, Sparkles, Brain, Loader2, Download, Calendar, CheckCircle, AlertCircle, LogOut, X, FileText, Upload, Utensils, Car, Home, Stethoscope, Film, ShoppingBag, GraduationCap, MoreHorizontal, DollarSign, Euro, PoundSterling, IndianRupee, JapaneseYen } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import ThemeToggle from './ThemeToggle';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
@@ -139,16 +139,34 @@ const Dashboard = ({ user }) => {
   }, [mostUsedCurrency]);
 
 
-  const handleIncomeChange = (val) => {
+  const handleIncomeChange = async (val) => {
     const value = parseFloat(val) || 0;
     setIncome(value);
     localStorage.setItem(`cashlens_income_${user.id}`, value);
+    
+    // Sync to Supabase profile
+    if (supabase && isOnline) {
+      await supabase.from('profiles').upsert({
+        id: user.id,
+        monthly_income: value,
+        updated_at: new Date().toISOString()
+      });
+    }
   };
 
-  const handleBudgetChange = (val) => {
+  const handleBudgetChange = async (val) => {
     const value = parseFloat(val) || 0;
     setBudget(value);
     localStorage.setItem(`cashlens_budget_${user.id}`, value);
+
+    // Sync to Supabase profile
+    if (supabase && isOnline) {
+      await supabase.from('profiles').upsert({
+        id: user.id,
+        monthly_budget: value,
+        updated_at: new Date().toISOString()
+      });
+    }
   };
 
   // Fetch exchange rates whenever base currency changes
@@ -276,6 +294,16 @@ const Dashboard = ({ user }) => {
             };
             setProfile(fetchedProfile);
             localStorage.setItem(`cashlens_profile_${user.id}`, JSON.stringify(fetchedProfile));
+
+            // Sync Income & Budget if present in DB
+            if (profileRes.data.monthly_income !== undefined && profileRes.data.monthly_income !== null) {
+              setIncome(profileRes.data.monthly_income);
+              localStorage.setItem(`cashlens_income_${user.id}`, profileRes.data.monthly_income);
+            }
+            if (profileRes.data.monthly_budget !== undefined && profileRes.data.monthly_budget !== null) {
+              setBudget(profileRes.data.monthly_budget);
+              localStorage.setItem(`cashlens_budget_${user.id}`, profileRes.data.monthly_budget);
+            }
           } else if (!profileRes.error) {
             // Profile missing but no error? Upsert current metadata
             await supabase.from('profiles').upsert({
@@ -869,8 +897,8 @@ const Dashboard = ({ user }) => {
               <header className="mb-8">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="p-2 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-lg shadow-blue-200">
-                      <Wallet className="w-6 h-6 text-white" />
+                    <div className="p-1.5 bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-100 dark:border-slate-700">
+                      <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-white tracking-tight">Cashlens</h1>
                   </div>
